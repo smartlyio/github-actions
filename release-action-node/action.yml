@@ -4,6 +4,10 @@ inputs:
   token:
     description: 'A Github PAT'
     required: true
+  dry_run:
+    description: 'True to not commit anything'
+    required: false
+    default: "false"
   use_yarn:
     description: 'If true, uses yarn instead of npm'
     required: false
@@ -37,7 +41,7 @@ runs:
           npm install
           npm version ${{ steps.version_check.outputs.version }}
         fi
-        git push && git push --tags
+        [[ "${{ inputs.dry_run }}" != "true" ]] && git push && git push --tags
     - name: Update action without release
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'false'
       shell: bash
@@ -53,7 +57,7 @@ runs:
         if [ -n "$git_changes" ]; then
           git add -- dist
           git commit -m "Update compiled action"
-          git push
+          [[ "${{ inputs.dry_run }}" != "true" ]] && git push
         fi
     - name: Update release branch
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
@@ -62,4 +66,4 @@ runs:
         package_version="$(jq -r .version < package.json)"
         release_branch="v${package_version//.*/}"
         git checkout -b "${release_branch}"
-        git push -u origin "${release_branch}"
+        [[ "${{ inputs.dry_run }}" != "true" ]] && git push -u origin "${release_branch}"
