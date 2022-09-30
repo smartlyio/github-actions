@@ -27,7 +27,7 @@ runs:
       id: filters
       shell: bash
       run: |
-        last_tag_date=$(git log -1 --tags --no-walk --pretty="format:%%cI")
+        last_tag_date=$(git log -1 --tags --no-walk --pretty="format:%cI")
         start_date=$(date -Is -d "$last_tag_date")
         echo ::set-output name=start_date::"$start_date"
     - name: Get PR labels
