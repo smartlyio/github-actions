@@ -21,12 +21,12 @@ runs:
         node-version: 16.x
     - name: Get next semantic version
       id: version_check
-      uses: "${{ github.action_path }}/../get-next-semantic-version"
+      uses: "smartlyio/github-actions/get-next-semantic-version@VULCAN-2557/init-public-actions"
       with:
         token: "${{ inputs.token }}"
     - name: Check branch behind
       id: check_branch_behind
-      uses: "${{ github.action_path }}/../check-branch-behind"
+      uses: "smartlyio/github-actions/check-branch-behind@VULCAN-2557/init-public-actions"
       with:
         is_base_ref: true
         remote_update: true

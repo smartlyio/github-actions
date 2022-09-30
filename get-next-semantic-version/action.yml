@@ -20,7 +20,7 @@ runs:
   steps:
     - name: Get base branch
       id: get_base_branch
-      uses: "${{ github.action_path }}/../get-base-branch"
+      uses: "smartlyio/github-actions/get-base-branch@VULCAN-2557/init-public-actions"
       with:
         token: "${{ inputs.token }}"
     - name: Calculate PR filters
