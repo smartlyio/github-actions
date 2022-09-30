@@ -9,7 +9,7 @@ jobs:
   find_changes:
     name: "Find changed directories that need tagging"
     if: github.event_name == 'pull_request'
-    runs-on: [self-hosted, small]
+    runs-on: ubuntu-20.04
     outputs:
       matrix: ${{ steps.get-matrix.outputs.matrix }}
       matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
@@ -24,9 +24,9 @@ jobs:
 
   create_tag:
     name: "Create tags"
+    runs-on: ubuntu-20.04
     needs: find_changes
     if: needs.find_changes.outputs.matrix_empty == 'false' && github.event_name == 'pull_request'
-    runs-on: [self-hosted, small]
     strategy:
       matrix:
         directory: ${{ fromJson(needs.find_changes.outputs.matrix).directory }}
