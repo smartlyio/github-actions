@@ -41,7 +41,7 @@ runs:
           npm install
           npm version ${{ steps.version_check.outputs.version }}
         fi
-        [[ "${{ inputs.dry_run }}" != "true" ]] && git push && git push --tags
+        [[ "${{ inputs.dry_run }}" == "false" ]] && git push && git push --tags
     - name: Update action without release
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'false'
       shell: bash
@@ -57,7 +57,7 @@ runs:
         if [ -n "$git_changes" ]; then
           git add -- dist
           git commit -m "Update compiled action"
-          [[ "${{ inputs.dry_run }}" != "true" ]] && git push
+          [[ "${{ inputs.dry_run }}" == "false" ]] && git push
         fi
     - name: Update release branch
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
@@ -66,4 +66,4 @@ runs:
         package_version="$(jq -r .version < package.json)"
         release_branch="v${package_version//.*/}"
         git checkout -b "${release_branch}"
-        [[ "${{ inputs.dry_run }}" != "true" ]] && git push -u origin "${release_branch}"
+        [[ "${{ inputs.dry_run }}" == "false" ]] && git push -u origin "${release_branch}"
