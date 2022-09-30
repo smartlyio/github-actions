@@ -1,0 +1,65 @@
+name: Release action (node.js)
+description: Release a node.js action
+inputs:
+  token:
+    description: 'A Github PAT'
+    required: true
+  use_yarn:
+    description: 'If true, uses yarn instead of npm'
+    required: false
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: Set Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+    - name: Get next semantic version
+      id: version_check
+      uses: ./get-next-semantic-version
+      with:
+        token: "${{ inputs.token }}"
+    - name: Check branch behind
+      id: check_branch_behind
+      uses: ./check-branch-behind
+      with:
+        is_base_ref: true
+        remote_update: true
+    - name: Create release
+      if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
+      shell: bash
+      run: |
+        if [[ "${{ inputs.use_yarn }}" == "true" ]]; then
+          yarn install
+          yarn version --new-version ${{ steps.version_check.outputs.version }}
+        else
+          npm install
+          npm version ${{ steps.version_check.outputs.version }}
+        fi
+        git push && git push --tags
+    - name: Update action without release
+      if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'false'
+      shell: bash
+      run: |
+        if [[ "${{ inputs.use_yarn }}" == "true" ]]; then
+          yarn install
+          yarn run version
+        else
+          npm install
+          npm run version
+        fi
+        git_changes="$(git status --porcelain -- dist || true)"
+        if [ -n "$git_changes" ]; then
+          git add -- dist
+          git commit -m "Update compiled action"
+          git push
+        fi
+    - name: Update release branch
+      if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
+      shell: bash
+      run: |
+        package_version="$(jq -r .version < package.json)"
+        release_branch="v${package_version//.*/}"
+        git checkout -b "${release_branch}"
+        git push -u origin "${release_branch}"

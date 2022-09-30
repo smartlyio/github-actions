@@ -1,0 +1,42 @@
+name: Auto tag new actions
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  find_changes:
+    name: "Find changed directories that need tagging"
+    if: github.event_name == 'pull_request'
+    runs-on: [self-hosted, small]
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+      matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - id: get-matrix
+        uses: smartlyio/find-changes-action@v1
+        with:
+          directory_containing: action.yml
+
+  create_tag:
+    name: "Create tags"
+    needs: find_changes
+    if: needs.find_changes.outputs.matrix_empty == 'false' && github.event_name == 'pull_request'
+    runs-on: [self-hosted, small]
+    strategy:
+      matrix:
+        directory: ${{ fromJson(needs.find_changes.outputs.matrix).directory }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: ../../auto-tagger
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: "${{ matrix.directory }}-"

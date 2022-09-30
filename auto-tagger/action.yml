@@ -1,0 +1,45 @@
+name: Auto tagger
+description: Creates a new version for a repository based on the labels "major, minor, patch" associated with the current pull-request
+inputs:
+  token:
+    description: 'A Github PAT'
+    required: true
+  tag_prefix:
+    description: 'The prefix for the tag'
+    required: false
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - uses: smartlyio/check-versioning-action@v5
+      id: check_version
+      with:
+        enforce: true
+        GITHUB_TOKEN: "${{ inputs.token }}"
+
+    - name: Calculate new tag
+      id: get_new_tag
+      run: ./get_new_tag.sh
+      shell: bash
+      env:
+        TAG_PREFIX: "${{ inputs.tag_prefix }}"
+        LABEL_NAME: "${{ steps.check_version.outputs.VERSION_LOWER }}"
+
+    - name: Push tag
+      if: github.event.action == 'closed' && github.event.pull_request.merged
+      uses: octokit/request-action@v2.x
+      with:
+        route: POST /repos/:repository/git/refs
+        repository: ${{ github.repository }}
+        sha: ${{ github.sha }}
+        ref: refs/tags/${{ steps.get_new_tag.outputs.new_tag }}
+      env:
+        GITHUB_TOKEN: "${{ inputs.token }}"
+
+    - name: Create major version branch
+      if: github.event.action == 'closed' && github.event.pull_request.merged
+      run: ./create_branch.sh
+      shell: bash
+      env:
+        TAG_PREFIX: "${{ inputs.tag_prefix }}"
+        LATEST_TAG: "${{ steps.get_new_tag.outputs.new_tag }}"
