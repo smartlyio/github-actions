@@ -19,7 +19,7 @@ runs:
 
     - name: Calculate new tag
       id: get_new_tag
-      run: "${{ env.GITHUB_ACTION_PATH }}/scripts/get_new_tag.sh"
+      run: "${{ github.action_path }}/scripts/get_new_tag.sh"
       shell: bash
       env:
         TAG_PREFIX: "${{ inputs.tag_prefix }}"
@@ -38,7 +38,7 @@ runs:
 
     - name: Create major version branch
       if: github.event.action == 'closed' && github.event.pull_request.merged
-      run: "${{ env.GITHUB_ACTION_PATH }}/scripts/create_branch.sh"
+      run: "${{ github.action_path }}/scripts/create_branch.sh"
       shell: bash
       env:
         TAG_PREFIX: "${{ inputs.tag_prefix }}"

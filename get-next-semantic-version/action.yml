@@ -20,7 +20,7 @@ runs:
   steps:
     - name: Get base branch
       id: get_base_branch
-      uses: "${{ env.GITHUB_ACTION_PATH }}/../get-base-branch"
+      uses: "${{ github.action_path }}/../get-base-branch"
       with:
         token: "${{ inputs.token }}"
     - name: Calculate PR filters

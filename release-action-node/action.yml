@@ -21,12 +21,12 @@ runs:
         node-version: 16.x
     - name: Get next semantic version
       id: version_check
-      uses: "${{ env.GITHUB_ACTION_PATH }}/../get-next-semantic-version"
+      uses: "${{ github.action_path }}/../get-next-semantic-version"
       with:
         token: "${{ inputs.token }}"
     - name: Check branch behind
       id: check_branch_behind
-      uses: "${{ env.GITHUB_ACTION_PATH }}/../check-branch-behind"
+      uses: "${{ github.action_path }}/../check-branch-behind"
       with:
         is_base_ref: true
         remote_update: true
