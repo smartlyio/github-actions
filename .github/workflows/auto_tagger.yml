@@ -28,6 +28,7 @@ jobs:
     needs: find_changes
     if: needs.find_changes.outputs.matrix_empty == 'false' && github.event_name == 'pull_request'
     strategy:
+      fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.find_changes.outputs.matrix).directory }}
 
