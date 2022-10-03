@@ -12,6 +12,10 @@ inputs:
     description: 'If true, force-pushes the newly-created branch'
     required: false
     default: 'false'
+  commit_latest:
+    description: 'If not empty, creates a commit with the provided message and adds all changed files to the new branch'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -48,3 +52,4 @@ runs:
         TAG_PREFIX: "${{ inputs.tag_prefix }}"
         LATEST_TAG: "${{ steps.get_new_tag.outputs.new_tag }}"
         FORCE_PUSH: "${{ inputs.force_push }}"
+        COMMIT_LATEST: "${{ inputs.commit_latest }}"

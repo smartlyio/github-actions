@@ -37,18 +37,32 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check for invalid names
+        shell: bash
+        run: |
+          if git rev-parse --verify "$DIRECTORY"; then
+            echo "The folder name cannot be the one of an existing ref"
+            exit 1
+          fi
+          if git tag -l "$DIRECTORY"; then
+            echo "The folder name cannot be the one of an existing tag"
+            exit 1
+          fi
+        env:
+          DIRECTORY: '${{ matrix.directory }}'
+
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - uses: "./action-monorepo-promote"
+      - uses: "smartlyio/github-actions/action-monorepo-promote@VULCAN-2557/init-public-actions"
         with:
           action_name: "${{ matrix.directory }}"
-          git_add: "true"
 
       - uses: "smartlyio/github-actions/auto-tagger@VULCAN-2557/init-public-actions"
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
           tag_prefix: "${{ matrix.directory }}-"
           force_push: "true"
+          commit_latest: "Promoted action ${{ matrix.directory }}"

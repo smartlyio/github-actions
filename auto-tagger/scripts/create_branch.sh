@@ -4,6 +4,7 @@ set -Eeumo pipefail
 tag_prefix="$TAG_PREFIX"
 latest_tag="$LATEST_TAG"
 force_push="$FORCE_PUSH"
+commit_latest="$COMMIT_LATEST"
 tag_without_prefix=$(echo "$latest_tag" | sed -E "s/^${tag_prefix}v//")
 
 if [[ "$tag_without_prefix" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
@@ -18,6 +19,11 @@ if [[ "$tag_without_prefix" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
   # Create and push branch
   git checkout -b "$branch_name"
   git branch --set-upstream-to="origin/$branch_name" || true
+
+  if [[ -n "$commit_latest" ]]; then
+    git add -A .
+    git commit -m "$commit_latest"
+  fi
 
   if [[ "$force_push" == "true" ]]; then
     git push --force -u origin "$branch_name"
