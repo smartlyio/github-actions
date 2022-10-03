@@ -1,0 +1,53 @@
+name: Promote action in actions monorepo
+description: |
+  Given a monorepo composed of multiple action folders, deletes all other actions and moves all the 
+  contents of the main action to the root of the repo.
+inputs:
+  action_name:
+    description: 'The name of the action'
+    required: true
+  cache_dir:
+    description: 'A folder where to store deleted actions'
+    required: false
+    default: ''
+outputs:
+  cache_dir:
+    description: 'A folder containing all removed folders'
+    value: steps.promote.outputs.cache_dir
+runs:
+  using: "composite"
+  steps:
+    - name: Promote action
+      id: promote
+      shell: bash
+      run: |
+        ACTION_DIR="${{ inputs.action_name }}"
+        if [[ ! -d "./$ACTION_DIR" ]]; then
+          echo "The action folder $ACTION_DIR does not exist!"
+          exit 1
+        fi
+        if [[ ! -f "./$ACTION_DIR/action.yml" ]]; then
+          echo "The action folder $ACTION_DIR does not contain an action.yml file!"
+          exit 1
+        fi
+        
+        # Stash the action contents in a temporary folder
+        TMP=$(mktemp -d)
+        cp -a "./${ACTION_DIR}/"* "$TMP/"
+        
+        ALL_DIRS=($(ls -d */))
+        # Remove all non-dotted directories from root and put them in a cache folder
+        TMP_CACHE='${{ inputs.cache_dir }}'
+        if [[ -z "$TMP_CACHE" ]]; then
+          TMP_CACHE="$(mktemp -d)"
+        fi
+        echo ::set-output name=cache_dir::"$TMP_CACHE"
+        
+        for directory in "${ALL_DIRS[@]}"; do
+          mkdir -p "$TMP_CACHE/$directory"
+          cp -a "$directory/"* "$TMP_CACHE/$directory/"
+          rm -rf "$directory"
+        done
+        
+        # Restore the action contents to the root folder
+        cp -a "$TMP/"* ./
