@@ -6,14 +6,6 @@ inputs:
   action_name:
     description: 'The name of the action'
     required: true
-  cache_dir:
-    description: 'A folder where to store deleted actions'
-    required: false
-    default: ''
-outputs:
-  cache_dir:
-    description: 'A folder containing all removed folders'
-    value: steps.promote.outputs.cache_dir
 runs:
   using: "composite"
   steps:
@@ -36,16 +28,9 @@ runs:
         cp -a "./${ACTION_DIR}/"* "$TMP/"
         
         ALL_DIRS=($(ls -d */))
-        # Remove all non-dotted directories from root and put them in a cache folder
-        TMP_CACHE='${{ inputs.cache_dir }}'
-        if [[ -z "$TMP_CACHE" ]]; then
-          TMP_CACHE="$(mktemp -d)"
-        fi
-        echo ::set-output name=cache_dir::"$TMP_CACHE"
+        # Remove all non-dotted directories from root
         
         for directory in "${ALL_DIRS[@]}"; do
-          mkdir -p "$TMP_CACHE/$directory"
-          cp -a "$directory/"* "$TMP_CACHE/$directory/"
           rm -rf "$directory"
         done
         
