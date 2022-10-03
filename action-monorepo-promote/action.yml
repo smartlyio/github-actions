@@ -36,3 +36,6 @@ runs:
         
         # Restore the action contents to the root folder
         cp -a "$TMP/"* ./
+        
+        echo "Remaining files:"
+        ls -al
