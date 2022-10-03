@@ -6,6 +6,7 @@
 * [`check-branch-behind`](./check-branch-behind/action.yml): Checks if the current revision is at head of the default branch.
 * [`get-base-branch`](./get-base-branch/action.yml): Gets the base branch of a git repository.
 * [`get-next-semantic-version`](./get-next-semantic-version/action.yml): Calculates the next semantic version.
+* [`git-init-userinfo`](./git-init-userinfo/action.yml): Sets the user name and email for git to use. Defaults to a GitHub actions user.
 * [`release-action-node`](./release-action-node/action.yml): Releases a node.js action.
 
 ## Release flow

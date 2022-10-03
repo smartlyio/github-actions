@@ -1,0 +1,19 @@
+name: Initialize git user info
+description: Sets the user name and email for git to use. Defaults to a GitHub actions user.
+inputs:
+  name:
+    description: 'The user name'
+    required: false
+    default: 'github-actions[bot]'
+  email:
+    description: 'The user email'
+    required: false
+    default: '41898282+github-actions[bot]@users.noreply.github.com'
+runs:
+  using: "composite"
+  steps:
+    - name: Init git user
+      shell: bash
+      run: |
+        git config user.name '${{ inputs.name }}'
+        git config user.email '${{ inputs.email }}'
