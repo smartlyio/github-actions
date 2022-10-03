@@ -1,0 +1,37 @@
+name: Promote action in actions monorepo
+description: |
+  Given a monorepo composed of multiple action folders, deletes all other actions and moves all the 
+  contents of the main action to the root of the repo.
+inputs:
+  action_name:
+    description: 'The name of the action'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Promote action
+      id: promote
+      shell: bash
+      run: |
+        ACTION_DIR="${{ inputs.action_name }}"
+        if [[ ! -d "./$ACTION_DIR" ]]; then
+          echo "The action folder $ACTION_DIR does not exist!"
+          exit 1
+        fi
+        if [[ ! -f "./$ACTION_DIR/action.yml" ]]; then
+          echo "The action folder $ACTION_DIR does not contain an action.yml file!"
+          exit 1
+        fi
+        
+        # Remove all non-dotted directories from root
+        git rm -r ./*
+        
+        # Restore the action we want to keep
+        git reset HEAD -- "./${ACTION_DIR}"
+        git checkout -- "./${ACTION_DIR}"
+        
+        # Move the action files to root
+        git mv "./${ACTION_DIR}/"* .
+        
+        echo "Remaining files:"
+        ls -al
