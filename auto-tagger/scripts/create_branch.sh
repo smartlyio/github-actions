@@ -18,10 +18,8 @@ if [[ "$tag_without_prefix" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
 
   # Create and push branch
   git checkout -b "$branch_name"
-  git branch --set-upstream-to="origin/$branch_name" || true
 
   if [[ -n "$commit_latest" ]]; then
-    git add -A .
     git commit -m "$commit_latest"
   fi
 

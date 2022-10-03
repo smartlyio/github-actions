@@ -19,7 +19,7 @@ inputs:
     required: false
     default: 'false'
   commit_latest:
-    description: 'If not empty, creates a commit with the provided message and adds all changed files to the new branch'
+    description: 'If not empty, creates a commit with the provided message in the new branch'
     required: false
     default: ''
   auto_tag_always:

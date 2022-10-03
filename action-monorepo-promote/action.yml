@@ -23,15 +23,15 @@ runs:
           exit 1
         fi
         
-        # Stash the action contents in a temporary folder
-        TMP=$(mktemp -d)
-        cp -a "./${ACTION_DIR}/"* "$TMP/"
-        
         # Remove all non-dotted directories from root
-        rm -rf "./"*
+        git rm -r ./*
         
-        # Restore the action contents into the root folder
-        cp -a "$TMP/"* ./
+        # Restore the action we want to keep
+        git reset HEAD -- "./${ACTION_DIR}"
+        git checkout -- "./${ACTION_DIR}"
+        
+        # Move the action files to root
+        git mv "./${ACTION_DIR}/"* .
         
         echo "Remaining files:"
         ls -al
