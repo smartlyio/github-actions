@@ -1,6 +1,6 @@
 name: Check branch behind
 description: |
-  Check if the current revision is at head of branch
+  Checks if the current revision is at head of the default branch.
 
   Use this step if you want to be sure that you run CI job using the HEAD of the branch. Local branch in CI runner might be not up to date with remote because CI jobs are usually triggered on commit push and checkout this commit.
 

@@ -1,5 +1,11 @@
 name: Auto tagger
-description: Creates a new version for a repository based on the labels "major, minor, patch" associated with the current pull-request
+description: |
+  Creates a new version (tag+branch) for a repository based on the labels "major, minor, patch" associated with the current pull-request.
+  
+  As a result of the tagging:
+  
+  1. A new tag will be created (e.g my-repo-v1.2.3) 
+  2. A branch will be created, always pointing to the latest major tag (e.g. my-repo-v1)
 inputs:
   token:
     description: 'A Github PAT'

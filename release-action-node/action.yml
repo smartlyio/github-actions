@@ -1,5 +1,5 @@
 name: Release action (node.js)
-description: Release a node.js action
+description: Releases a node.js action.
 inputs:
   token:
     description: 'A Github PAT'
