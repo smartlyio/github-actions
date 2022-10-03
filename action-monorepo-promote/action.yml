@@ -31,14 +31,10 @@ runs:
         TMP=$(mktemp -d)
         cp -a "./${ACTION_DIR}/"* "$TMP/"
         
-        ALL_DIRS=($(ls -d */))
         # Remove all non-dotted directories from root
+        rm -rf "./"*
         
-        for directory in "${ALL_DIRS[@]}"; do
-          rm -rf "$directory"
-        done
-        
-        # Restore the action contents to the root folder
+        # Restore the action contents into the root folder
         cp -a "$TMP/"* ./
         
         echo "Remaining files:"
