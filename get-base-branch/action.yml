@@ -1,0 +1,22 @@
+name: Get base branch
+description: Gets the base branch of a git repository
+inputs:
+  token:
+    description: 'A Github PAT'
+    required: true
+outputs:
+  git_base_branch:
+    description: "Git base branch"
+    value: ${{ steps.get_base_branch.outputs.git_base_branch }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get git base branch
+      id: get_base_branch
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      shell: bash
+      run: |
+        BASE_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY" | jq -r .default_branch)"
+        echo ::set-output name=git_base_branch::"$BASE_BRANCH"
+        echo GIT_BASE_BRANCH="$BASE_BRANCH" >> "$GITHUB_ENV"

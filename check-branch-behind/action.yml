@@ -1,0 +1,63 @@
+name: Check branch behind
+description: |
+  Check if the current revision is at head of branch
+
+  Use this step if you want to be sure that you run CI job using the HEAD of the branch. Local branch in CI runner might be not up to date with remote because CI jobs are usually triggered on commit push and checkout this commit.
+
+  As a result this step can exit with `1` status code or set output depending on `exit_on_fail` parameter.
+inputs:
+  is_base_ref:
+    description: 'If true, performs the check using the current commit as base ref'
+    required: false
+    default: "false"
+  exit_on_fail:
+    description: 'If true, throws on error'
+    required: false
+    default: "false"
+  remote_update:
+    description: 'Use git remote update instead of fetch'
+    required: false
+    default: "false"
+  git_default_branch:
+    description: 'Default git branch'
+    required: false
+    default: "master"
+outputs:
+  branch_up_to_date:
+    description: "true if the branch is up to date"
+    value: ${{ steps.check_branch_behind.outputs.branch_up_to_date }}
+runs:
+  using: "composite"
+  steps:
+    - name: Check if at head of branch
+      id: check_branch_behind
+      shell: bash
+      run: |
+        if [[ "${{ inputs.is_base_ref }}" == "true" ]]; then
+          if [[ "${{ inputs.remote_update }}" == "true" ]]; then
+            git remote update
+          else
+            git fetch --depth=1 origin "${{ inputs.git_default_branch }}"
+          fi
+          
+          local=${{ github.sha }}
+          remote=$(git rev-parse origin/"${{ inputs.git_default_branch }}")
+        else
+          git fetch --depth=1 origin "${{ github.head_ref }}"
+          local=${{ github.event.pull_request.head.sha }}
+          remote=$(git rev-parse "origin/${{ github.head_ref }}")
+        fi
+        
+        echo "$remote"
+        if [ "$local" == "$remote" ]; then
+          echo "Looks like we're at the head of the branch."
+          echo ::set-output name=branch_up_to_date::true
+        else
+          echo "Local branch is not up to date with remote. Exiting."
+        
+          if [[ "${{ inputs.exit_on_fail }}" == "true" ]]; then
+            exit 1
+          fi
+         
+          echo ::set-output name=branch_up_to_date::false
+        fi

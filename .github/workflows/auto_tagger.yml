@@ -1,0 +1,71 @@
+name: Auto tag new actions
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  find_changes:
+    name: "Find changed directories that need tagging"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+      matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - id: get-matrix
+        uses: smartlyio/find-changes-action@v1
+        with:
+          directory_containing: action.yml
+
+  create_tag:
+    name: "Create tags"
+    runs-on: ubuntu-20.04
+    needs: find_changes
+    if: needs.find_changes.outputs.matrix_empty == 'false' && github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.find_changes.outputs.matrix).directory }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check for invalid names
+        shell: bash
+        run: |
+          if git rev-parse --verify "$DIRECTORY"; then
+            echo "The folder name cannot be the one of an existing ref"
+            exit 1
+          fi
+          if [ $(git tag -l "$DIRECTORY") ]; then
+            echo "The folder name cannot be the one of an existing tag"
+            exit 1
+          fi
+        env:
+          DIRECTORY: '${{ matrix.directory }}'
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - uses: "smartlyio/github-actions/action-monorepo-promote@VULCAN-2557/init-public-actions"
+        with:
+          action_name: "${{ matrix.directory }}"
+
+      - uses: "smartlyio/github-actions/auto-tagger@VULCAN-2557/init-public-actions"
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          tag_prefix: "${{ matrix.directory }}-"
+          force_push: "true"
+          commit_latest: "Promoted action ${{ matrix.directory }}"
+
+          ## TESTING
+          auto_tag_always: 'true'
