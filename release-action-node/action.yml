@@ -19,17 +19,24 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: 16.x
+    - name: Get base branch
+      id: get_base_branch
+      uses: "smartlyio/github-actions/get-base-branch@VULCAN-2557/init-public-actions"
+      with:
+        token: "${{ inputs.token }}"
     - name: Get next semantic version
       id: version_check
       uses: "smartlyio/github-actions/get-next-semantic-version@VULCAN-2557/init-public-actions"
       with:
         token: "${{ inputs.token }}"
+        git_default_branch: "${{ steps.get_base_branch.outputs.git_base_branch }}"
     - name: Check branch behind
       id: check_branch_behind
       uses: "smartlyio/github-actions/check-branch-behind@VULCAN-2557/init-public-actions"
       with:
         is_base_ref: true
         remote_update: true
+        git_default_branch: "${{ steps.get_base_branch.outputs.git_base_branch }}"
     - name: Create release
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
       shell: bash

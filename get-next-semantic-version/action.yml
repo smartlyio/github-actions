@@ -8,6 +8,10 @@ inputs:
   token:
     description: 'A Github PAT'
     required: true
+  git_default_branch:
+    description: 'Default git branch'
+    required: false
+    default: "master"
 outputs:
   version:
     description: "Git base branch"
@@ -18,11 +22,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: Get base branch
-      id: get_base_branch
-      uses: "smartlyio/github-actions/get-base-branch@VULCAN-2557/init-public-actions"
-      with:
-        token: "${{ inputs.token }}"
     - name: Calculate PR filters
       id: filters
       shell: bash
@@ -52,7 +51,7 @@ runs:
               }
             }
           }
-        filter: repo:${{ github.repository }} is:pr base:${{ steps.get_base_branch.outputs.git_base_branch }} merged:>${{ steps.filters.outputs.start_date }}
+        filter: repo:${{ github.repository }} is:pr base:${{ inputs.git_default_branch }} merged:>${{ steps.filters.outputs.start_date }}
       env:
         GITHUB_TOKEN: "${{ inputs.token }}"
     - name: Get version being bumped
