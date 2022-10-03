@@ -66,3 +66,6 @@ jobs:
           tag_prefix: "${{ matrix.directory }}-"
           force_push: "true"
           commit_latest: "Promoted action ${{ matrix.directory }}"
+
+          ## TESTING
+          auto_tag_always: 'true'
