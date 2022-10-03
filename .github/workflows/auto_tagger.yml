@@ -44,7 +44,7 @@ jobs:
             echo "The folder name cannot be the one of an existing ref"
             exit 1
           fi
-          if git tag -l "$DIRECTORY"; then
+          if [ $(git tag -l "$DIRECTORY") ]; then
             echo "The folder name cannot be the one of an existing tag"
             exit 1
           fi
