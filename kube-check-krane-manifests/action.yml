@@ -20,7 +20,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
     - name: Get repo name
       id: get_repository_name
       uses: smartlyio/github-actions@get-repo-name-v1
