@@ -8,6 +8,7 @@
 * [`get-repo-name`](./get-repo-name/action.yml): Gets the name of the current repository.
 * [`get-next-semantic-version`](./get-next-semantic-version/action.yml): Calculates the next semantic version.
 * [`git-init-userinfo`](./git-init-userinfo/action.yml): Sets the user name and email for git to use. Defaults to a GitHub actions user.
+* [`kube-check-krane-manifests`](./kube-check-krane-manifests/action.yml): Runs a fake krane deploy to validate kubernetes resources definitions.
 * [`release-action-node`](./release-action-node/action.yml): Releases a node.js action.
 
 ## Release flow
