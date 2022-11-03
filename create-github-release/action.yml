@@ -58,13 +58,10 @@ runs:
       run: ${{ github.action_path }}/get-release-changes.sh
       shell: bash
     - name: Create Release
-      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
-      with:
-        tag_name: ${{ inputs.tag-name }}
-        release_name: ${{ inputs.release-name }}
-        body: |
-          ${{ steps.release-message.outputs.changes }}
-        draft: false
-        prerelease: false
+        TAG_NAME: ${{ inputs.tag-name }}
+        RELEASE_NAME: ${{ inputs.release-name }}
+        RELEASE_BODY: ${{ steps.release-message.outputs.changes }}
+      run: ${{ github.action_path }}/create-release.sh
+      shell: bash
