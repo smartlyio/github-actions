@@ -18,5 +18,5 @@ runs:
       shell: bash
       run: |
         BASE_BRANCH="$(gh api "repos/$GITHUB_REPOSITORY" | jq -r .default_branch)"
-        echo ::set-output name=git_base_branch::"$BASE_BRANCH"
+        echo "git_base_branch=$BASE_BRANCH" >> "$GITHUB_OUTPUT"
         echo GIT_BASE_BRANCH="$BASE_BRANCH" >> "$GITHUB_ENV"

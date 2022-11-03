@@ -28,7 +28,7 @@ runs:
       run: |
         last_tag_date=$(git log -1 --tags --no-walk --pretty="format:%cI")
         start_date=$(date -Is -d "$last_tag_date")
-        echo ::set-output name=start_date::"$start_date"
+        echo "start_date=$start_date" >> "$GITHUB_OUTPUT"
     - name: Get PR labels
       uses: octokit/graphql-action@v2.x
       id: get_latest_prs
@@ -62,13 +62,15 @@ runs:
       run: |
         echo "$PR_DATA"
         version=$(echo "$PR_DATA" | grep -m1 -oi major || echo "$PR_DATA" | grep -m1 -oi minor || echo "$PR_DATA" | grep -m1 -oi patch || echo "")
-        version_lower=${version,,}
-        echo ::set-output name=version::"$version_lower"
-        if [ -z "$version" ]; then
-          echo ::set-output name=continue_release::false
-        else
-          echo ::set-output name=continue_release::true
-        fi
+        version_lower="${version,,}"
+        {
+          echo "version=$version_lower"
+          if [ -z "$version" ]; then
+            echo "continue_release=false"
+          else
+            echo "continue_release=true"
+          fi
+        } >> "$GITHUB_OUTPUT"
     - name: Show version being bumped
       if: steps.version_check.outputs.continue_release == 'true'
       shell: bash

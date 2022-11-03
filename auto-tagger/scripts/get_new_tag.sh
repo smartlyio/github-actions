@@ -32,7 +32,7 @@ if [[ "$tag_without_prefix" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
 
   new_tag="${tag_prefix}v${major}.${minor}.${patch}"
   echo "The new tag is: $new_tag"
-  echo ::set-output name=new_tag::"$new_tag"
+  echo "new_tag=$new_tag" >> "$GITHUB_OUTPUT"
 else
   echo "Bad tag format";
   exit 1
