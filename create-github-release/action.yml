@@ -12,6 +12,14 @@ inputs:
     description: 'Name of the release being created'
     required: false
     default: ${{ github.ref }}
+  tag-search-prefix:
+    description: "Prefix for tags to search in git repository to find previous release"
+    required: false
+    default: "v"
+  tag-search-regex:
+    description: "grep -P regexp to further filter searched tags (e.g. exclude alphas)"
+    required: false
+    default: "v\\d+\\.\\d+\\.\\d+"
 runs:
   using: "composite"
   steps:
@@ -23,6 +31,8 @@ runs:
     - name: Get merge window
       id: merge-window
       env:
+        TAG_SEARCH_PREFIX: ${{ inputs.tag-search-prefix }}
+        TAG_SEARCH_REGEX: ${{ inputs.tag-search-regex }}
         TAG_NAME: ${{ inputs.tag-name }}
       run: ${{ github.action_path }}/get-merge-window.sh
       shell: bash
