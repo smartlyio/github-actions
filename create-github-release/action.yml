@@ -30,6 +30,7 @@ runs:
       uses: octokit/graphql-action@v2.x
       id: get-release-prs
       with:
+        token: ${{ inputs.token }}
         query: |
           query($filter: String!) {
             search(query:$filter, type: ISSUE, last: 100) {
