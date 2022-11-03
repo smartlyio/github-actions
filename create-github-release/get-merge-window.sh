@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-this_tag="$TAG_NAME"
+this_tag="${TAG_NAME/#refs\/tags\//}"
 
 recent_tags="$(git tag --sort=creatordate --list 'v*' | grep -P 'v\d+\.\d+\.\d+' | grep --color=no -B1 "$this_tag")"
 previous_tag="$(echo "$recent_tags" | head -n1)"
