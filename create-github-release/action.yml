@@ -1,0 +1,70 @@
+name: Create GitHub release
+description: Create GitHub release with release notes from merged PRs
+inputs:
+  token:
+    description: 'A Github PAT'
+    required: true
+  tag-name:
+    description: 'Name of the tag being released'
+    required: false
+    default: ${{ github.ref }}
+  release-name:
+    description: 'Name of the release being created'
+    required: false
+    default: ${{ github.ref }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get base branch
+      id: get_base_branch
+      uses: "smartlyio/github-actions@get-base-branch-v1"
+      with:
+        token: "${{ inputs.token }}"
+    - name: Get merge window
+      id: merge-window
+      env:
+        TAG_NAME: ${{ inputs.tag-name }}
+      run: ${{ github.action_path }}/get-merge-window.sh
+      shell: bash
+    - name: Get merged PRs
+      uses: octokit/graphql-action@v2.x
+      id: get-release-prs
+      with:
+        token: ${{ inputs.token }}
+        query: |
+          query($filter: String!) {
+            search(query:$filter, type: ISSUE, last: 100) {
+              edges {
+                node {
+                  ... on PullRequest {
+                    number
+                    mergedAt
+                    title
+                    mergeCommit {
+                      author {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        filter: repo:${{ github.repository }} is:pr base:${{ steps.get_base_branch.outputs.git_base_branch }} merged:${{ steps.merge-window.outputs.start_date }}..${{ steps.merge-window.outputs.end_date }}
+    - name: Get release message
+      id: release-message
+      env:
+        PR_DATA: ${{ steps.get-release-prs.outputs.data }}
+      run: ${{ github.action_path }}/get-release-changes.sh
+      shell: bash
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      with:
+        tag_name: ${{ inputs.tag-name }}
+        release_name: ${{ inputs.release-name }}
+        body: |
+          ${{ steps.release-message.outputs.changes }}
+        draft: false
+        prerelease: false
