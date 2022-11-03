@@ -13,4 +13,4 @@ runs:
       run: |
         REPO_NAME="$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")"
         echo REPOSITORY_NAME="$REPO_NAME" >> "$GITHUB_ENV"
-        echo ::set-output name=repository_name::"$REPO_NAME"
+        echo "repository_name=$REPO_NAME" >> "$GITHUB_OUTPUT"
