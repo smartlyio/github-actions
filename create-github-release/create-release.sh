@@ -24,6 +24,7 @@ if ! response="$(curl -f \
      "https://api.github.com/repos/$GITHUB_REPOSITORY/releases")"; then
     echo "Failed to create release:"
     echo "$response"
+    exit 1
 else
     echo "$response" | jq -r '"Created release " + .name + " on " + .target_commitish + "\n\n" + .body'
 fi
