@@ -16,6 +16,23 @@ RELEASE_SPEC="$(jq -c -n --arg body "$RELEASE_BODY" --arg tag_name "$tag_name" -
 echo "Creating release:"
 echo "$RELEASE_SPEC" | jq .
 
+echo "Checking for existing release"
+if response="$(curl -f \
+     -H "Content-Type: application/json" \
+     -H "Accept: application/vnd.github+json" \
+     -H "Authorization: Bearer $GITHUB_TOKEN" \
+     "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$tag_name")"; then
+    body_matches="$(echo "$response" | jq --arg body "$RELEASE_BODY" -r '.body == $body')"
+    if [[ "$body_matches" == "true" ]]; then
+        echo "Release already exists with the same content"
+        exit 0
+    else
+        echo -e "Release already exists with a different description:\n\n"
+        echo "$response" | jq .
+        exit 1
+    fi
+fi
+
 if ! response="$(curl -f \
      -H "Content-Type: application/json" \
      -H "Accept: application/vnd.github+json" \
