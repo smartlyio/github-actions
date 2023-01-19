@@ -32,6 +32,10 @@ inputs:
     description: |
       Arbitrary string that will be added to the cache key of the bundler cache. Set or change it if you need
       to invalidate the cache.
+  force-custom-macos-install:
+    description: |
+      If true, forces the custom hack to install ruby via brew
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -58,10 +62,10 @@ runs:
       # the setup-ruby action does not support macos-13 yet
       shell: bash
       working-directory: "${{ inputs.working-directory }}"
-      if: "${{ runner.os == 'macOS' && (steps.get_macos_version.outputs.macos_arch == 'arm' || steps.get_macos_version.outputs.macos_version == '13') }}"
+      if: "${{ inputs.force-custom-macos-install == 'true' || runner.os == 'macOS' && (steps.get_macos_version.outputs.macos_arch == 'arm' || steps.get_macos_version.outputs.macos_version == '13') }}"
 
     - uses: ruby/setup-ruby@v1
-      if: "${{ runner.os != 'macOS' || steps.get_macos_version.outputs.macos_arch == 'arm' || steps.get_macos_version.outputs.macos_version != '13' }}"
+      if: "${{ inputs.force-custom-macos-install != 'true' && (runner.os != 'macOS' || steps.get_macos_version.outputs.macos_arch == 'arm' || steps.get_macos_version.outputs.macos_version != '13') }}"
       with:
         ruby-version: "${{ inputs.ruby-version }}"
         bundler: "${{ inputs.bundler }}"
