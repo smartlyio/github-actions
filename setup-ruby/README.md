@@ -1,1 +1,0 @@
-Lots of inspiration from https://github.com/ruby/setup-ruby/blob/master/bundler.js

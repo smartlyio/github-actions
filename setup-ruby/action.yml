@@ -37,6 +37,7 @@ runs:
   steps:
     - run: |
         echo "macos_version=$(sw_vers -productVersion | cut -f1 -d.)" >> "$GITHUB_OUTPUT"
+        echo "macos_arch=$(uname -p)"
       shell: bash
       if: "${{ runner.os == 'macOS' }}"
       id: get_macos_version
@@ -53,10 +54,10 @@ runs:
       # the setup-ruby action does not support macos-13 yet
       shell: bash
       working-directory: "${{ inputs.working-directory }}"
-      if: "${{ runner.os == 'macOS' && steps.get_macos_version.outputs.macos_version == '13' }}"
+      if: "${{ runner.os == 'macOS' && (steps.get_macos_version.outputs.macos_arch == 'arm' || steps.get_macos_version.outputs.macos_version == '13') }}"
 
     - uses: ruby/setup-ruby@v1
-      if: "${{ runner.os != 'macOS' || (runner.os == 'macOS' && steps.get_macos_version.outputs.macos_version != '13') }}"
+      if: "${{ runner.os != 'macOS' || steps.get_macos_version.outputs.macos_arch == 'arm' || steps.get_macos_version.outputs.macos_version != '13' }}"
       with:
         ruby-version: "${{ inputs.ruby-version }}"
         bundler: "${{ inputs.bundler }}"
