@@ -22,7 +22,7 @@ jobs:
           directory_containing: action.yml
 
   test:
-    name: setup-ruby ${{ matrix.os }}/${{ matrix.version }}/${{ matrix.bundler_cache }}
+    name: setup-ruby ${{ matrix.os }}/${{ matrix.version }}
     needs: find_changes
     if: contains(fromJson(needs.find_changes.outputs.matrix).directory, 'setup-ruby')
     strategy:
@@ -39,5 +39,5 @@ jobs:
           cp -R ./_actions/_testing/setup-ruby/* .
       - uses: ./_actions/setup-ruby
         with:
-          version: ${{ matrix.version }}
+          ruby-version: ${{ matrix.version }}
           bundler_cache: 'true'
