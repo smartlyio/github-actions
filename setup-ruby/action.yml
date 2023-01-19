@@ -50,6 +50,10 @@ runs:
         export PATH="$BIN_PATH:$PATH"
         echo "$BIN_PATH/bin" >> $GITHUB_PATH
         
+        bundler_version=
+        [[ -f "Gemfile.lock" ]] && bundler_version="$(grep -A1 "BUNDLED WITH" Gemfile.lock | tail -n1 | xargs || true)"
+        [[ -n "$bundler_version" ]] && gem install "bundler:$bundler_version"
+        
         bundle install
       # the setup-ruby action does not support macos-13 yet
       shell: bash
