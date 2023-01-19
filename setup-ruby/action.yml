@@ -4,7 +4,7 @@ description: |
   
   Supported platforms:
   
-  * Any MacOS X64/ARM machines with a simple brew install and NO cache support
+  * MacOS ARM and MacOS 13 machines with a simple brew install and NO cache support
   * All the other platforms supported by https://github.com/ruby/setup-ruby
 inputs:
   ruby-version:
