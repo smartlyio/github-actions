@@ -75,7 +75,7 @@ runs:
     - uses: ruby/setup-ruby@v1
       if: |
         inputs.force-custom-macos-install != 'true' && 
-          !(
+        !(
           runner.os == 'macOS' && 
           (
             steps.get_macos_version.outputs.macos_arch == 'arm' || 
