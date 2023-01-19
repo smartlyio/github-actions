@@ -40,4 +40,4 @@ jobs:
       - uses: ./_actions/setup-ruby
         with:
           ruby-version: ${{ matrix.version }}
-          bundler_cache: 'true'
+          bundler-cache: 'true'
