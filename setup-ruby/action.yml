@@ -47,7 +47,7 @@ runs:
         brew install ruby@${{ inputs.ruby-version }}
         BIN_PATH="$(brew --prefix ruby@${{ inputs.ruby-version }})"
         
-        export PATH="$BIN_PATH:$PATH
+        export PATH="$BIN_PATH:$PATH"
         echo "$BIN_PATH/bin" >> $GITHUB_PATH
         
         bundle install
