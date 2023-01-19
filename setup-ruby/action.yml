@@ -48,7 +48,7 @@ runs:
 
     - run: |
         set -e
-        brew install ruby@${{ inputs.ruby-version }}
+        brew update && brew install ruby@${{ inputs.ruby-version }}
         BIN_PATH="$(brew --prefix ruby@${{ inputs.ruby-version }})"
         
         export PATH="$BIN_PATH:$PATH"
