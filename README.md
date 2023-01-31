@@ -10,6 +10,7 @@
 * [`git-init-userinfo`](./git-init-userinfo/action.yml): Sets the user name and email for git to use. Defaults to a GitHub actions user.
 * [`kube-check-krane-manifests`](./kube-check-krane-manifests/action.yml): Runs a fake krane deploy to validate kubernetes resources definitions.
 * [`release-action-node`](./release-action-node/action.yml): Releases a node.js action.
+* [`setup-ruby`](./setup-ruby/action.yml): Sets up Ruby. A wrapper around https://github.com/ruby/setup-ruby to also support `macos-13` runners.
 
 ## Release flow
 
