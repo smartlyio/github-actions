@@ -1,0 +1,83 @@
+name: Get repo name
+description: Gets the repository name
+inputs:
+  ssh_pub_key_path:
+    description: Path to the SSH public key used for connecting to LXD, pass the relative path within your repo
+    required: true
+  lxd_preseed_config_path:
+    description: Path to LXD preseed config
+    required: true
+  ubuntu-version-code:
+    description: LXD container ubuntu version
+    required: true
+# Non-required inputs start
+  lxd_container_name:
+    description: Set the lxd container name
+    required: false
+    default: ansible-target
+  if_install_lxd:
+    description: Install LXD if github runner does not have it pre-installed, pass true/false
+    required: false
+    default: "false"
+# Non-required inputs end
+outputs:
+  ixd_ip:
+    description: "The private IP address for LXD container"
+    value: ${{ steps.lxd-init.outputs.ip }}
+runs:
+  using: "composite"
+  steps:
+    - name: Install LXD
+      if: inputs.if_install_lxd == "true"
+      shell: bash
+      run: sudo snap install lxd
+    - name: Install dependencies
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt-get --assume-yes --no-install-recommends install \
+        git-crypt \
+        gnupg \
+        ufw \
+        openssh-client \
+        python3 \
+        python3-pip \
+        python3-setuptools \
+        python3-wheel \
+        python3-six \
+        python3-crypto \
+        python3-dnspython \
+        rhc \
+        wget \
+        rsync
+        pip3 install --no-cache-dir --requirement requirements.txt
+    - name: Init LXD with Configs
+      shell: bash
+      run: |
+        LXD_PUB_KEY="$(cat ${{ inputs.ssh_pub_key_path }})"
+        sed -e "s/LXD_PUB_KEY/$LXD_PUB_KEY/g" < ${{ inputs.lxd_preseed_config_path }} | sudo lxd init --preseed
+    - name: Allow setup network for lxd service
+      shell: bash
+      run: |
+        sudo ufw allow in on lxdbr0
+        sudo ufw allow out on lxdbr0
+        sudo ufw route allow in on lxdbr0
+        sudo ufw route allow out on lxdbr0
+    - name: Start lxd container as ansible target
+      shell: bash
+      id: lxd-init
+      run: |
+        sudo lxc launch "ubuntu:${{ inputs.ubuntu-version-code }}" ${{ inputs.lxd_container_name }}
+        while ! LXD_IP="$(sudo lxc list --format json | jq -e --arg name ${{ inputs.lxd_container_name }} -r '[.[] | select(.name == $name )][0]["state"]["network"]["eth0"]["addresses"][0]["address"]')"; do sleep 1; done;
+        echo "ip=$LXD_IP" >> "$GITHUB_OUTPUT"
+    - name: Make sure the LXD worker has external network connection
+      shell: bash
+      run: |
+        while ! sudo lxc exec ${{ inputs.lxd_container_name }} -- ping -c 1 smartly.io; do
+          sleep 1
+          count=$(( count + 1 ))
+          if [ "$count" -gt 20 ]; then
+            echo "Failed to establish external network connection"
+            exit 1
+          fi
+        done
