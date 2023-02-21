@@ -1,4 +1,4 @@
-# Ansible CI Init
+# Init Ansible CI
 
 The Ansible CI Init composite action sets up an environment for running playbooks from [smartly-ansible](https://github.com/smartlyio/smartly-ansible) in Github Action
 
