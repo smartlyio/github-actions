@@ -28,9 +28,13 @@ runs:
   using: "composite"
   steps:
     - name: Install LXD
-      if: inputs.if_install_lxd == "true"
       shell: bash
-      run: sudo snap install lxd
+      run: |
+        if [[ "${{ inputs.if_install_lxd }}" == "true" ]]; then
+          sudo snap install lxd
+        else
+          echo "Skip the LXD installation"
+        fi
     - name: Install dependencies
       shell: bash
       run: |
