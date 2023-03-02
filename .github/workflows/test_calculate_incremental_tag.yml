@@ -15,4 +15,4 @@ jobs:
       - id: create_tag
         uses: ./calculate-incremental-tag
       - run: |
-          echo "New tag: ${{ steps.create_tag.outputs.tag }}
+          echo "New tag: ${{ steps.create_tag.outputs.tag }}"
