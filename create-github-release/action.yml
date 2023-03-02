@@ -20,6 +20,10 @@ inputs:
     description: "grep -P regexp to further filter searched tags (e.g. exclude alphas)"
     required: false
     default: "v\\d+\\.\\d+\\.\\d+"
+outputs:
+  release-id:
+    description: "The new release's id"
+    value: "${{ steps.create-release.outputs.release-id }}"
 runs:
   using: "composite"
   steps:
@@ -68,6 +72,7 @@ runs:
       run: ${{ github.action_path }}/get-release-changes.sh
       shell: bash
     - name: Create Release
+      id: create-release
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
         TAG_NAME: ${{ inputs.tag-name }}

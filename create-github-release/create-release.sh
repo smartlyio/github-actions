@@ -44,4 +44,8 @@ if ! response="$(curl -f \
     exit 1
 else
     echo "$response" | jq -r '"Created release " + .name + " on " + .target_commitish + "\n\n" + .body'
+
+    {
+      echo "release-id=$(echo "$response" | jq -r '.id')"
+    } >> "$GITHUB_OUTPUT"
 fi
