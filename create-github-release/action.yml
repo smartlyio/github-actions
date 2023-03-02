@@ -1,5 +1,5 @@
 name: Create GitHub release
-description: |>
+description: >
   Create GitHub release with release notes from merged PRs and
   automatic semantic versioning.
 inputs:
