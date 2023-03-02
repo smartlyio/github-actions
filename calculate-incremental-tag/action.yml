@@ -17,7 +17,7 @@ runs:
       id: calculate_tag
       shell: bash
       run: |
-        tag_prefix="$(date +"v%%G.%%V.")"
+        tag_prefix="$(date +"v%G.%V.")"
         previous_version="$(git tag -l "${tag_prefix}*" --merged | cut -d. -f3 | sort -h | tail -n1 | grep '^[0-9]\+$' || echo '0')"
         version_number=$((previous_version + 1))
         tag="$tag_prefix$version_number"
