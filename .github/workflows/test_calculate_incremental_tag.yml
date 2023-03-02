@@ -1,0 +1,38 @@
+name: Test calculate-incremental-tag
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  find_changes:
+    name: "Find changed directories"
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.get-matrix.outputs.matrix }}
+      matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - id: get-matrix
+        uses: smartlyio/find-changes-action@v1
+        with:
+          directory_containing: action.yml
+
+  test:
+    name: calculate-incremental-tag
+    needs: find_changes
+    if: contains(fromJson(needs.find_changes.outputs.matrix).directory, 'calculate-incremental-tag')
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: _actions
+      - run: |
+          cp -R ./_actions/_testing/calculate-incremental-tag/* .
+      - id: create_tag
+        uses: ./_actions/calculate-incremental-tag
+      - run: |
+          echo "New tag: ${{ steps.create_tag.outputs.tag }}
