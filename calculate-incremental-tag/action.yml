@@ -1,6 +1,6 @@
 name: Calculate the next incremental tag
 description: |
-  Job to calculate a lightweight incremental tag.
+  Action to calculate a lightweight incremental tag.
   
   Tag has specific format - `vYYYY.WW.INC` where:
     - YYYY - current year

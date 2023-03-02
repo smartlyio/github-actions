@@ -3,6 +3,7 @@
 * [`action-monorepo-promote`](./action-monorepo-promote/action.yml): Given a monorepo composed of multiple action folders, deletes all other actions and moves all the
   contents of the main action to the root of the repo.
 * [`auto-tagger`](./auto-tagger/action.yml): Creates a new version (tag+branch) for a repository based on the labels "major, minor, patch" associated with the current pull-request.
+* [`calculate-incremental-tag`](./calculate-incremental-tag/action.yml): Action to calculate a lightweight incremental tag.
 * [`check-branch-behind`](./check-branch-behind/action.yml): Checks if the current revision is at head of the default branch.
 * [`get-base-branch`](./get-base-branch/action.yml): Gets the base branch of a git repository.
 * [`get-repo-name`](./get-repo-name/action.yml): Gets the name of the current repository.
