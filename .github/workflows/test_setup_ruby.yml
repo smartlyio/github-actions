@@ -31,8 +31,6 @@ jobs:
   ### because of other broken dependencies in the brew update/upgrade process
   #  test-custom-wrapper:
   #    name: setup-ruby (wrap) ${{ matrix.os }}/${{ matrix.version }}
-  #    needs: find_changes
-  #    if: contains(fromJson(needs.find_changes.outputs.matrix).directory, 'setup-ruby')
   #    strategy:
   #      fail-fast: false
   #      matrix:
