@@ -1,0 +1,29 @@
+name: Create simple GitHub release
+description: Create a GitHub release with the specified tag, name and body
+inputs:
+  token:
+    description: 'A Github PAT'
+    required: true
+  tag-name:
+    description: 'Name of the tag being released'
+    required: false
+    default: ${{ github.ref }}
+  release-name:
+    description: 'Name of the release being created'
+    required: false
+    default: ${{ github.ref }}
+  release-body:
+    description: 'Content of the release description'
+    required: false
+    default: ''
+runs:
+  using: "composite"
+  steps:
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        TAG_NAME: ${{ inputs.tag-name }}
+        RELEASE_NAME: ${{ inputs.release-name }}
+        RELEASE_BODY: ${{ inputs.release-body }}
+      run: ${{ github.action_path }}/create-release.sh
+      shell: bash
