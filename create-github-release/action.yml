@@ -1,5 +1,7 @@
 name: Create GitHub release
-description: Create GitHub release with release notes from merged PRs
+description: |>
+  Create GitHub release with release notes from merged PRs and
+  automatic semantic versioning.
 inputs:
   token:
     description: 'A Github PAT'
@@ -67,11 +69,10 @@ runs:
         PR_DATA: ${{ steps.get-release-prs.outputs.data }}
       run: ${{ github.action_path }}/get-release-changes.sh
       shell: bash
-    - name: Create Release
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
-        TAG_NAME: ${{ inputs.tag-name }}
-        RELEASE_NAME: ${{ inputs.release-name }}
-        RELEASE_BODY: ${{ steps.release-message.outputs.changes }}
-      run: ${{ github.action_path }}/create-release.sh
-      shell: bash
+    - name: Create release
+      uses: smartlyio/github-actions@create-simple-github-release-v1
+      with:
+        token: ${{ inputs.token }}
+        tag-name: ${{ inputs.tag-name }}
+        release-name: ${{ inputs.release-name }}
+        release-body: ${{ steps.release-message.outputs.changes }}
