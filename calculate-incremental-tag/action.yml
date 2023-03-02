@@ -1,0 +1,29 @@
+name: Calculate the next incremental tag
+description: |
+  Action to calculate a lightweight incremental tag.
+  
+  Tag has specific format - `vYYYY.WW.INC` where:
+    - YYYY - current year
+    - WW - current week number
+    - INC - incremental number to have unique tag names within a week
+outputs:
+  tag:
+    description: "The calculated tag"
+    value: ${{ steps.calculate_tag.outputs.tag }}
+runs:
+  using: "composite"
+  steps:
+    - name: Calculate tag
+      id: calculate_tag
+      shell: bash
+      run: |
+        tag_prefix="$(date +"v%G.%V.")"
+        previous_version="$(git tag -l "${tag_prefix}*" --merged | cut -d. -f3 | sort -h | tail -n1 | grep '^[0-9]\+$' || echo '0')"
+        version_number=$((previous_version + 1))
+        tag="$tag_prefix$version_number"
+        exists="$(git tag -l "$tag")"
+        if [[ "$tag" == "$exists" ]]; then
+          echo "Tag $tag already exists; skipping tag creation"
+          exit 1
+        fi
+        echo tag="$tag" >> "$GITHUB_OUTPUT"

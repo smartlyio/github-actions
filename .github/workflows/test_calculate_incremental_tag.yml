@@ -1,0 +1,18 @@
+name: Test calculate-incremental-tag
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - calculate-incremental-tag/**
+
+jobs:
+  test:
+    name: calculate-incremental-tag
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - id: create_tag
+        uses: ./calculate-incremental-tag
+      - run: |
+          echo "New tag: ${{ steps.create_tag.outputs.tag }}"
