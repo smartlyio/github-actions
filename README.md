@@ -5,6 +5,8 @@
 * [`auto-tagger`](./auto-tagger/action.yml): Creates a new version (tag+branch) for a repository based on the labels "major, minor, patch" associated with the current pull-request.
 * [`calculate-incremental-tag`](./calculate-incremental-tag/action.yml): Action to calculate a lightweight incremental tag.
 * [`check-branch-behind`](./check-branch-behind/action.yml): Checks if the current revision is at head of the default branch.
+* [`create-github-release`](./create-github-release/action.yml) Create a new GitHub tag and release, with a semantic version bump based on PR labels.
+* [`create-simple-github-release`](./create-simple-github-release/action.yml) Create a GitHub tag and release with specified name and body text.
 * [`get-base-branch`](./get-base-branch/action.yml): Gets the base branch of a git repository.
 * [`get-repo-name`](./get-repo-name/action.yml): Gets the name of the current repository.
 * [`get-next-semantic-version`](./get-next-semantic-version/action.yml): Calculates the next semantic version.
