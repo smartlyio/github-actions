@@ -58,7 +58,9 @@ runs:
         [[ -f "Gemfile.lock" ]] && bundler_version="$(grep -A1 "BUNDLED WITH" Gemfile.lock | tail -n1 | xargs || true)"
         [[ -n "$bundler_version" ]] && gem install "bundler:$bundler_version"
 
-        [[ "${RUN_BUNDLE_INSTALL,,}" == "true" ]] && bundle install
+        if [[ "${RUN_BUNDLE_INSTALL,,}" == "true" ]]; then
+          bundle install
+        fi
       # the setup-ruby action does not support macos-13 yet
       shell: bash
       env:
