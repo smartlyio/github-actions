@@ -1,3 +1,3 @@
-FROM ghcr.io/markdown-confluence/publish:5.4.0
+FROM ghcr.io/markdown-confluence/publish:v5.4.0
 
 USER root
