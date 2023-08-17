@@ -29,3 +29,4 @@ runs:
     FOLDER_TO_PUBLISH: ${{ inputs.folderToPublish }}
     CONFLUENCE_CONTENT_ROOT: ${{ inputs.contentRoot }}
     CONFLUENCE_CONFIG_FILE: ${{ inputs.configFile }}
+    CONFLUENCE_FIRST_HEADING_PAGE_TITLE: ${{ inputs.firstHeadingPageTitle }}
