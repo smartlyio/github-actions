@@ -14,6 +14,7 @@
 * [`kube-check-krane-manifests`](./kube-check-krane-manifests/action.yml): Runs a fake krane deploy to validate kubernetes resources definitions.
 * [`release-action-node`](./release-action-node/action.yml): Releases a node.js action.
 * [`setup-ruby`](./setup-ruby/action.yml): Sets up Ruby. A wrapper around https://github.com/ruby/setup-ruby to also support `macos-13` runners.
+* [`publish-confluence`](./publish-confluence/action.yml): Fork of [markdown-confluence action](https://github.com/markdown-confluence/publish-action/) but with stricter docker image tag
 
 ## Release flow
 
