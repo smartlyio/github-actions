@@ -17,4 +17,5 @@ jobs:
       - uses: ./add-pr-checklist
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          checklist_file: _testing/add-pr-checklist/PR_CHECKLIST.md
+          # Uncomment to test a custom path
+          # checklist_file: _testing/add-pr-checklist/PR_CHECKLIST.md
