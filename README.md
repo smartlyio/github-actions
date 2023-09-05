@@ -3,6 +3,7 @@
 * [`action-monorepo-promote`](./action-monorepo-promote/action.yml): Given a monorepo composed of multiple action folders, deletes all other actions and moves all the
   contents of the main action to the root of the repo.
 * [`auto-tagger`](./auto-tagger/action.yml): Creates a new version (tag+branch) for a repository based on the labels "major, minor, patch" associated with the current pull-request.
+* [`add-pr-checklist`](./add-pr-checklist/action.yml): Adds a reviewer checklist comment to a PR.
 * [`calculate-incremental-tag`](./calculate-incremental-tag/action.yml): Action to calculate a lightweight incremental tag.
 * [`check-branch-behind`](./check-branch-behind/action.yml): Checks if the current revision is at head of the default branch.
 * [`create-github-release`](./create-github-release/action.yml) Create a new GitHub tag and release, with a semantic version bump based on PR labels.
