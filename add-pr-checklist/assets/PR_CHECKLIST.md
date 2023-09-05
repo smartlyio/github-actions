@@ -1,3 +1,5 @@
+For reviewers, please remember to check the following entries while looking at this PR:
+ 
 * [ ] **Functionality**: Does the code behave as the author likely intended? Does the behavior match the story/issue plan? If not, is the way the code behaves good for its users?
 * [ ] **Design**: Is the code well-designed and appropriate for your system?
 * [ ] **Complexity**: Could the code be made simpler? Would another developer be able to easily understand and use this code when they come across it in the future?
