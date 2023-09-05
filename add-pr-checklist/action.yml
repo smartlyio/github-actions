@@ -1,0 +1,34 @@
+name: Add PR checklist
+description: |
+  Creates a pinned comment in a PR that contains a list of checklist items for reviewers to follow.
+inputs:
+  github_token:
+    description: 'A Github PAT'
+    required: true
+  checklist_file:
+    description: 'The template file containing the checklist contents'
+    default: PR_CHECKLIST.md
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+    - name: Check if there is already a PR checklist comment
+      id: find_pr_checklist_comment
+      uses: actions/github-script@v6
+      with:
+        script: return require('${{ github.action_path }}/scripts/check_pr_comment.js')({github, context})
+        github-token: ${{ inputs.github_token }}
+    - name: Load checklist content
+      id: load_pr_checklist
+      run: "${{ github.action_path }}/scripts/load_pr_checklist.sh"
+      shell: bash
+      if: steps.find_pr_checklist_comment.outputs.result == 'null'
+      env:
+        CHECKLIST_FILE: ${{ inputs.checklist_file }}
+    - uses: mshick/add-pr-comment@v2
+      if: steps.find_pr_checklist_comment.outputs.result == 'null'
+      with:
+        message-id: pr_checklist
+        message-path: ${{ steps.load_pr_checklist.outputs.checklist_file }}
+        repo-token: ${{ inputs.github_token }}

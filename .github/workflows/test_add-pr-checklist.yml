@@ -1,0 +1,20 @@
+name: Test add-pr-checklist
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - add-pr-checklist/**
+
+jobs:
+  test:
+    name: add-pr-checklist
+    runs-on: ubuntu-20.04
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./add-pr-checklist
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          checklist_file: _testing/add-pr-checklist/PR_CHECKLIST.md
