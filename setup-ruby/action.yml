@@ -74,7 +74,7 @@ runs:
           runner.os == 'macOS' && 
           (
             steps.get_macos_version.outputs.macos_arch == 'arm' || 
-            steps.get_macos_version.outputs.macos_version == '13'
+            steps.get_macos_version.outputs.macos_version == '14'
           )
         )
 
@@ -85,7 +85,7 @@ runs:
           runner.os == 'macOS' && 
           (
             steps.get_macos_version.outputs.macos_arch == 'arm' || 
-            steps.get_macos_version.outputs.macos_version == '13'
+            steps.get_macos_version.outputs.macos_version == '14'
           )
         )
       with:
