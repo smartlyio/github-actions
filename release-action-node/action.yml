@@ -45,37 +45,24 @@ runs:
     - name: Create release
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
       shell: bash
+      env:
+        USE_YARN: ${{ inputs.use_yarn }}
+        VERSION: ${{ steps.version_check.outputs.version }}
+        DRY_RUN: ${{ inputs.dry_run }}
       run: |
-        if [[ "${{ inputs.use_yarn }}" == "true" ]]; then
-          yarn install
-          yarn version --new-version ${{ steps.version_check.outputs.version }}
-        else
-          npm install
-          npm version ${{ steps.version_check.outputs.version }}
-        fi
-        [[ "${{ inputs.dry_run }}" == "false" ]] && git push && git push --tags
+        "$GITHUB_ACTION_PATH/create-release.sh"
     - name: Update action without release
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'false'
       shell: bash
+      env:
+        USE_YARN: ${{ inputs.use_yarn }}
+        DRY_RUN: ${{ inputs.dry_run }}
       run: |
-        if [[ "${{ inputs.use_yarn }}" == "true" ]]; then
-          yarn install
-          yarn run version
-        else
-          npm install
-          npm run version
-        fi
-        git_changes="$(git status --porcelain -- dist || true)"
-        if [ -n "$git_changes" ]; then
-          git add -- dist
-          git commit -m "Update compiled action"
-          [[ "${{ inputs.dry_run }}" == "false" ]] && git push
-        fi
+        "$GITHUB_ACTION_PATH/update-without-release.sh"
     - name: Update release branch
       if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
       shell: bash
+      env:
+        DRY_RUN: ${{ inputs.dry_run }}
       run: |
-        package_version="$(jq -r .version < package.json)"
-        release_branch="v${package_version//.*/}"
-        git checkout -b "${release_branch}"
-        [[ "${{ inputs.dry_run }}" == "false" ]] && git push -u origin "${release_branch}"
+        "$GITHUB_ACTION_PATH/update-release-branch.sh"
