@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefailt
+set -euo pipefail
 
 if [[ "${USE_YARN,,}" == "true" ]]; then
   yarn install
