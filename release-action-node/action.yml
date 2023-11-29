@@ -23,7 +23,7 @@ runs:
     - name: Set Node.js version for the action being released
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.action-node-version }}
+        node-version: ${{ steps.action-node-version.outputs.node-version }}
     - name: Get base branch
       id: get_base_branch
       uses: "smartlyio/github-actions@get-base-branch-v1"
