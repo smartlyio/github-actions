@@ -39,7 +39,7 @@ runs:
       id: check_branch_behind
       uses: "smartlyio/github-actions@check-branch-behind-v1"
       with:
-        is_base_ref: ${{ !inputs.dry_run }}
+        is_base_ref: ${{ inputs.dry_run == 'false' }}
         remote_update: true
         git_default_branch: "${{ steps.get_base_branch.outputs.git_base_branch }}"
     - name: Create release
