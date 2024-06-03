@@ -9,4 +9,8 @@ else
   npm install
   npm version "$VERSION"
 fi
-[[ "${DRY_RUN,,}" == "false" ]] && git push && git push --tags
+if [[ "${DRY_RUN,,}" == "false" ]]; then
+    git push && git push --tags
+else
+    echo "[dry run] Push new version" 1>&2
+fi
