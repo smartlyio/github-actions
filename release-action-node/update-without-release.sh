@@ -13,5 +13,9 @@ git_changes="$(git status --porcelain -- dist || true)"
 if [ -n "$git_changes" ]; then
     git add -- dist
     git commit -m "Update compiled action"
-    [[ "${DRY_RUN,,}" == "false" ]] && git push
+    if [[ "${DRY_RUN,,}" == "false" ]]; then
+        git push
+    else
+        echo "[dry run] Push changes" 1>&2
+    fi
 fi
