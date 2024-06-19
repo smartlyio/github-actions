@@ -11,7 +11,7 @@ on:
 jobs:
   find_changes:
     name: "Find changed directories that need tagging"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.get-matrix.outputs.matrix }}
       matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
@@ -26,7 +26,7 @@ jobs:
 
   create_tag:
     name: "Create tags"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: find_changes
     if: needs.find_changes.outputs.matrix_empty == 'false'
     strategy:
