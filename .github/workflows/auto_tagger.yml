@@ -1,9 +1,12 @@
 name: Auto tag new actions
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
-    branches: [master]
-    types: [opened, synchronize, reopened, closed]
+    branches:
+      - master
 
 jobs:
   find_changes:
@@ -18,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
       - id: get-matrix
-        uses: smartlyio/find-changes-action@v1
+        uses: smartlyio/find-changes-action@v2
         with:
           directory_containing: action.yml
 
@@ -64,3 +67,4 @@ jobs:
           tag_prefix: "${{ matrix.directory }}-"
           force_push: "true"
           commit_latest: "Promoted action ${{ matrix.directory }}"
+          auto_tag_always: ${{ github.event_name == 'push' }}
