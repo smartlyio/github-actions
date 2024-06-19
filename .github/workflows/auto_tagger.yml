@@ -16,7 +16,7 @@ jobs:
       matrix: ${{ steps.get-matrix.outputs.matrix }}
       matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - id: get-matrix
@@ -35,7 +35,7 @@ jobs:
         directory: ${{ fromJson(needs.find_changes.outputs.matrix).directory }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
