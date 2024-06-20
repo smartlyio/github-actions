@@ -9,9 +9,9 @@ on:
 jobs:
   test:
     name: calculate-incremental-tag
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: create_tag
         uses: ./calculate-incremental-tag
       - run: |

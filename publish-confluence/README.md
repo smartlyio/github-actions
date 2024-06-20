@@ -14,10 +14,10 @@ on: push
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Publish Markdown to Confluence
         uses: markdown-confluence/publish@v1
@@ -50,10 +50,10 @@ on: push
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Publish Markdown to Confluence
         uses: markdown-confluence/publish@v1
@@ -154,10 +154,10 @@ on: push
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Publish Markdown to Confluence
         uses: markdown-confluence/publish@v1

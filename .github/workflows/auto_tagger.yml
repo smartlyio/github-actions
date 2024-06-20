@@ -1,39 +1,41 @@
 name: Auto tag new actions
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
-    branches: [master]
-    types: [opened, synchronize, reopened, closed]
+    branches:
+      - master
 
 jobs:
   find_changes:
     name: "Find changed directories that need tagging"
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.get-matrix.outputs.matrix }}
       matrix_empty: ${{ steps.get-matrix.outputs.matrix_empty }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - id: get-matrix
-        uses: smartlyio/find-changes-action@v1
+        uses: smartlyio/find-changes-action@v2
         with:
           directory_containing: action.yml
 
   create_tag:
     name: "Create tags"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: find_changes
-    if: needs.find_changes.outputs.matrix_empty == 'false' && github.event_name == 'pull_request'
+    if: needs.find_changes.outputs.matrix_empty == 'false'
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.find_changes.outputs.matrix).directory }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -64,3 +66,4 @@ jobs:
           tag_prefix: "${{ matrix.directory }}-"
           force_push: "true"
           commit_latest: "Promoted action ${{ matrix.directory }}"
+          auto_tag_always: ${{ github.event_name == 'push' }}
