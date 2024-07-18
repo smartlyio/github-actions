@@ -12,6 +12,10 @@ inputs:
     description: "If true, uses yarn instead of npm"
     required: false
     default: "false"
+  update_release_branch:
+    description: "Set to false for non-action releases"
+    required: false
+    default: "true"
 runs:
   using: "composite"
   steps:
@@ -60,7 +64,7 @@ runs:
       run: |
         "$GITHUB_ACTION_PATH/update-without-release.sh"
     - name: Update release branch
-      if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true'
+      if: steps.check_branch_behind.outputs.branch_up_to_date == 'true' && steps.version_check.outputs.continue_release == 'true' && inputs.update_release_branch == 'true'
       shell: bash
       env:
         DRY_RUN: ${{ inputs.dry_run }}
