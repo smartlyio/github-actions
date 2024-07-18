@@ -2,14 +2,14 @@ name: Release action (node.js)
 description: Releases a node.js action.
 inputs:
   token:
-    description: 'A Github PAT'
+    description: "A Github PAT"
     required: true
   dry_run:
-    description: 'True to not commit anything'
+    description: "True to not commit anything"
     required: false
     default: "false"
   use_yarn:
-    description: 'If true, uses yarn instead of npm'
+    description: "If true, uses yarn instead of npm"
     required: false
     default: "false"
 runs:
