@@ -16,6 +16,10 @@ inputs:
     description: "Set to false for non-action releases"
     required: false
     default: "true"
+outputs:
+  result:
+    description: "Reports whether release was cancelled or skipped"
+    value: ${{ steps.notify_status.outputs.status }}
 runs:
   using: "composite"
   steps:
@@ -70,3 +74,12 @@ runs:
         DRY_RUN: ${{ inputs.dry_run }}
       run: |
         "$GITHUB_ACTION_PATH/update-release-branch.sh"
+    - name: Set job result
+      id: notify_status
+      if: steps.check_branch_behind.outputs.branch_up_to_date == 'false' || 'steps.version_check.outputs.continue_release' == 'false'
+      shell: bash
+      env:
+        CONTINUE_RELEASE: ${{ steps.version_check.outputs.continue_release }}
+        BRANCH_UP_TO_DATE: ${{ steps.check_branch_behind.outputs.branch_up_to_date }}
+      run: |
+        "$GITHUB_ACTION_PATH/notify-status.sh"
