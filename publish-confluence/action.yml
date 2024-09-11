@@ -18,6 +18,8 @@ inputs:
     description: 'The root path for published content on Confluence. This is used to tell the action where to look for Markdown files and content.'
   configFile:
     description: 'A configuration file containing additional settings and customizations for the publishing process.'
+  firstHeadingPageTitle:
+    description: 'true/false, whether first heading should be used as page title.'
 runs:
   using: 'docker'
   image: 'Dockerfile'
