@@ -16,6 +16,12 @@ outputs:
   version:
     description: "Git base branch"
     value: ${{ steps.version_check.outputs.version }}
+  previous_version:
+    description: "Previous tagged version"
+    value: ${{ steps.tag_info.outputs.last_tag }}
+  next_version:
+    description: "Next version tag name"
+    value: ${{ steps.calcaulate-version.outputs.next_version }}
   continue_release:
     description: "true if it is ok to continue the release process"
     value: ${{ steps.version_check.outputs.continue_release }}
@@ -23,12 +29,18 @@ runs:
   using: "composite"
   steps:
     - name: Calculate PR filters
-      id: filters
+      id: tag_info
       shell: bash
       run: |
-        last_tag_date=$(git log -1 --exclude="*alpha*" --tags --no-walk --pretty="format:%cI")
+        last_tag_commit="$(git log -1 --exclude="*alpha*" --tags --no-walk --pretty="format:%H")"
+        last_tag="$(git describe --tags --abbrev=0 "$last_tag_commit")"
+        last_tag_date="$(git log -1 --exclude="*alpha*" --no-walk --pretty="format:%cI" "$last_tag_commit")"
         start_date=$(date -Is -d "$last_tag_date")
-        echo "start_date=$start_date" >> "$GITHUB_OUTPUT"
+        {
+          echo "start_date=$start_date"
+          echo "last_tag=$last_tag"
+          echo "last_tag_commit=$last_tag_commit"
+        } >> "$GITHUB_OUTPUT"
     - name: Get PR labels
       uses: octokit/graphql-action@v2.x
       id: get_latest_prs
@@ -51,7 +63,7 @@ runs:
               }
             }
           }
-        filter: repo:${{ github.repository }} is:pr base:${{ inputs.git_default_branch }} merged:>${{ steps.filters.outputs.start_date }}
+        filter: repo:${{ github.repository }} is:pr base:${{ inputs.git_default_branch }} merged:>${{ steps.tag_info.outputs.start_date }}
       env:
         GITHUB_TOKEN: "${{ inputs.token }}"
     - name: Get version being bumped
@@ -75,3 +87,13 @@ runs:
       if: steps.version_check.outputs.continue_release == 'true'
       shell: bash
       run: echo "Based on tags, we're updating ${{ steps.version_check.outputs.VERSION }} version!"
+
+    - name: Calculate version
+      id: calcaulate-version
+      shell: bash
+      env:
+        BUMP: ${{ steps.version_check.outputs.VERSION }}
+        PREVIOUS_VERSION: ${{ steps.tag_info.outputs.last_tag }}
+      run: |
+        NEXT_VERSION="$("${GITHUB_ACTION_PATH}/calculate-version.sh" "$BUMP" "$PREVIOUS_VERSION")"
+        echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
