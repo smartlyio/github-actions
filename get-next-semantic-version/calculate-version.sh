@@ -23,6 +23,9 @@ calculate_version() {
         minor=$(( minor + 1 ))
     elif [[ "$bump" == "patch" ]]; then
         patch=$(( patch + 1 ))
+    elif [[ "$bump" == "" ]]; then
+        echo "No version to bump" 1>&2
+        exit 0
     else
         echo "Unknown version bump $bump" 1>&2
         exit 1
