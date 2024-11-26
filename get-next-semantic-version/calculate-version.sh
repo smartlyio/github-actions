@@ -8,7 +8,7 @@ calculate_version() {
     local prefix=
     local version=
     # shellcheck disable=SC2001
-    prefix="$(echo "$previous_version" | sed -e 's/^\([a-ZA-Z]*\).*/\1/')"
+    prefix="$(echo "$previous_version" | sed -e 's/^\([a-zA-Z]*\).*/\1/')"
     # shellcheck disable=SC2001
     version="$(echo "$previous_version" | sed -e 's/^[a-ZA-Z]\(.*\)/\1/')"
 
