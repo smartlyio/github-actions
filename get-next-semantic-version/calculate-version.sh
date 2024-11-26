@@ -10,7 +10,7 @@ calculate_version() {
     # shellcheck disable=SC2001
     prefix="$(echo "$previous_version" | sed -e 's/^\([a-zA-Z]*\).*/\1/')"
     # shellcheck disable=SC2001
-    version="$(echo "$previous_version" | sed -e 's/^[a-zA-Z]\(.*\)/\1/')"
+    version="$(echo "$previous_version" | sed -e 's/^[a-zA-Z]*\(.*\)/\1/')"
 
     local without_patch="${version%.*}"
     local major="${version//.*/}"
