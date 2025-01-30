@@ -19,8 +19,11 @@ calculate_version() {
 
     if [[ "$bump" == "major" ]]; then
         major=$(( major + 1 ))
+        minor=0
+        patch=0
     elif [[ "$bump" == "minor" ]]; then
         minor=$(( minor + 1 ))
+        patch=0
     elif [[ "$bump" == "patch" ]]; then
         patch=$(( patch + 1 ))
     elif [[ "$bump" == "" ]]; then
