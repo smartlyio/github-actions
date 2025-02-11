@@ -41,6 +41,7 @@ runs:
           echo "last_tag=$last_tag"
           echo "last_tag_commit=$last_tag_commit"
         } >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
     - name: Get PR labels
       uses: octokit/graphql-action@v2.x
       id: get_latest_prs
@@ -58,6 +59,9 @@ runs:
                         name
                       }
                     }
+                    mergeCommit {
+                      oid
+                    }
                   }
                 }
               }
@@ -70,19 +74,10 @@ runs:
       id: version_check
       env:
         PR_DATA: "${{ steps.get_latest_prs.outputs.data }}"
+        LAST_TAG_COMMIT: "${{ steps.tag_info.outputs.last_tag_commit }}"
       shell: bash
       run: |
-        echo "$PR_DATA"
-        version=$(echo "$PR_DATA" | grep -m1 -oi major || echo "$PR_DATA" | grep -m1 -oi minor || echo "$PR_DATA" | grep -m1 -oi patch || echo "")
-        version_lower="${version,,}"
-        {
-          echo "version=$version_lower"
-          if [ -z "$version" ]; then
-            echo "continue_release=false"
-          else
-            echo "continue_release=true"
-          fi
-        } >> "$GITHUB_OUTPUT"
+        "${GITHUB_ACTION_PATH}/process-latest-prs.sh"
     - name: Show version being bumped
       if: steps.version_check.outputs.continue_release == 'true'
       shell: bash
@@ -97,3 +92,4 @@ runs:
       run: |
         NEXT_VERSION="$("${GITHUB_ACTION_PATH}/calculate-version.sh" "$BUMP" "$PREVIOUS_VERSION")"
         echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
