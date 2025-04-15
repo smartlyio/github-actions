@@ -27,4 +27,4 @@ runs:
     - name: Run
       shell: sh
       run: |
-        git ls-files ".github/*/*.yml" "*/action.yml" | xargs -0 action-validator --verbose
+        git ls-files ".github/*/*.yml" "*/action.yml" | xargs action-validator --verbose
