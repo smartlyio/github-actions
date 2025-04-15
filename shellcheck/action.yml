@@ -1,0 +1,30 @@
+name: ShellCheck
+description: Runs ShellCheck with colorful output
+inputs:
+  version:
+    description: ShellCheck version to install
+    required: false
+    default: v0.10.0
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache ShellCheck binary
+      id: cache
+      uses: actions/cache@v4
+      with:
+        path: /usr/local/bin/shellcheck
+        key: shellcheck-${{ inputs.version }}
+    - if: steps.cache.outputs.cache-hit != 'true'
+      name: Install
+      shell: sh
+      env:
+        URL: https://github.com/koalaman/shellcheck/releases/download/${{ inputs.version }}/shellcheck-${{ inputs.version }}.linux.x86_64.tar.xz
+        TMP: ${{ runner.temp }}
+      run: |
+        curl -sSL "$URL" | tar -xJ -C "$TMP" --strip-components=1
+        cp "$TMP/shellcheck" /usr/local/bin/
+    - shell: sh
+      run: |
+        git ls-files -z '*.sh' '*.bash' '*.dash' '*.ksh' | xargs -0 shellcheck --color=always --source-path=SCRIPTDIR --external-sources
+        shellcheck --version
