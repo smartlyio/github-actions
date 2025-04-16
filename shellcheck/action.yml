@@ -4,7 +4,7 @@ inputs:
   version:
     description: ShellCheck version to install
     required: false
-    default: v0.10.0
+    default: 0.10.0
 
 runs:
   using: "composite"
@@ -19,7 +19,7 @@ runs:
       name: Install
       shell: sh
       env:
-        url: https://github.com/koalaman/shellcheck/releases/download/${{ inputs.version }}/shellcheck-${{ inputs.version }}.linux.x86_64.tar.xz
+        url: https://github.com/koalaman/shellcheck/releases/download/v${{ inputs.version }}/shellcheck-v${{ inputs.version }}.linux.x86_64.tar.xz
         tmp: ${{ runner.temp }}
       run: |
         curl -sSL "$url" | tar -xJ -C "$tmp" --strip-components=1
