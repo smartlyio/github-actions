@@ -1,0 +1,26 @@
+name: find-changes
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/find-changes.yml"
+      - "find-changes/**/*"
+      - "!find-changes/README.md"
+
+jobs:
+  example:
+    name: Example
+    runs-on: [ubuntu-24.04]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find changes
+        id: changes
+        uses: ./find-changes
+
+      - name: Echo changed files
+        shell: sh
+        run: |
+          echo ${{ steps.changes.outputs.array }}
+        # format: ["foo/bar", "baz"]
+        # getting the array is the difficult bit. Doing logic based on array contents can be done in local composite actions
