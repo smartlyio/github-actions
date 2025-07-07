@@ -1,0 +1,41 @@
+name: Get labels
+description: "Returns the labels of the PR associated with github.sha"
+runs:
+  using: "composite"
+  steps:
+    - name: Output labels
+      id: label
+      shell: sh
+      env:
+        GH_TOKEN: ${{ github.token }}
+        # On pull requests, github.sha is the merge commit SHA, so head SHA is used instead. See `GITHUB_SHA` column at:
+        # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#pull_request
+        # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#push
+        COMMIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      run: |
+        NAMES=$(gh api graphql -f query='
+          query($sha: String!) {
+            search(query: $sha, type: ISSUE, first: 1) {
+              edges {
+                node {
+                  ... on PullRequest {
+                    number
+                    title
+                    labels(first: 10) {
+                      nodes {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ' -f sha="$COMMIT_SHA"  --jq '(.data.search.edges[0].node.labels.nodes // []) | map(.name)')
+
+        echo "$NAMES"
+        echo "names=$NAMES" >> "$GITHUB_OUTPUT"
+outputs:
+  names:
+    description: "Labels of the PR associated with github.sha"
+    value: ${{ steps.label.outputs.names }}
