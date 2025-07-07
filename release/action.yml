@@ -1,0 +1,70 @@
+name: Release
+description: "Creates a release"
+inputs:
+  type:
+    description: "major, minor, or patch"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Parse latest release
+      id: latest
+      shell: sh
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        version=$(gh release view --json name -q '.name' 2>/dev/null || echo '0.0.0')
+        echo "latest=$version"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+
+        major="$(echo "$version" | cut -d. -f1)"
+        minor="$(echo "$version" | cut -d. -f2)"
+        patch="$(echo "$version" | cut -d. -f3)"
+        {
+          echo "major=$major"
+          echo "minor=$minor"
+          echo "patch=$patch"
+        } >> "$GITHUB_OUTPUT"
+        echo "parsed=$major.$minor.$patch"
+    - name: Bump version
+      id: this
+      shell: bash
+      env:
+        type: ${{ inputs.type }}
+        major: ${{ steps.latest.outputs.major }}
+        minor: ${{ steps.latest.outputs.minor }}
+        patch: ${{ steps.latest.outputs.patch }}
+      run: |
+        if [[ "$type" == "major" ]]; then
+          echo "version=$((major + 1)).0.0" >> "$GITHUB_OUTPUT"
+        elif [[ "$type" == "minor" ]]; then
+          echo "version=$major.$((minor + 1)).0" >> "$GITHUB_OUTPUT"
+        elif [[ "$type" == "patch" ]]; then
+          echo "version=$major.$minor.$((patch + 1))" >> "$GITHUB_OUTPUT"
+        else
+          echo "Invalid type: $type" >&2
+          exit 1
+        fi
+    - name: Tag current commit
+      id: tagger
+      shell: sh
+      env:
+        semver: ${{ steps.this.outputs.version }}
+      run: |
+        tag="v$semver"
+        echo "this=$tag"
+        git tag "$tag"
+        git push origin "$tag"
+        echo "tag=$tag" >> "$GITHUB_OUTPUT"
+    - name: Create a release
+      shell: sh
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TAG: ${{ steps.tagger.outputs.tag }}
+        TITLE: ${{ steps.this.outputs.version }}
+      run: |
+        gh release create "$TAG" --title="$TITLE" --generate-notes
+outputs:
+  tag:
+    description: "The tag created"
+    value: ${{ steps.tagger.outputs.tag }}
