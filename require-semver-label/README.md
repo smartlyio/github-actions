@@ -19,7 +19,7 @@ jobs:
 
       - name: Require semantic version label
         id: semver
-        uses: anttiharju/actions/require-semver-label@v0
+        uses: smartlyio/github-actions@require-semver-label-v1
     outputs:
       release_type: ${{ steps.semver.outputs.bump }}
 ```

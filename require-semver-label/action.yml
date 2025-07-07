@@ -14,11 +14,11 @@ runs:
   steps:
     - name: Get labels
       id: label
-      uses: anttiharju/actions/get-labels@v0
+      uses: smartlyio/github-actions@get-labels-v1
 
     - name: Check for major label
       id: major
-      uses: anttiharju/actions/require-label@v0
+      uses: smartlyio/github-actions@require-label-v1
       with:
         labels: ${{ steps.label.outputs.names }}
         name: "major"
@@ -26,7 +26,7 @@ runs:
 
     - name: Check for minor label
       id: minor
-      uses: anttiharju/actions/require-label@v0
+      uses: smartlyio/github-actions@require-label-v1
       with:
         labels: ${{ steps.label.outputs.names }}
         name: "minor"
@@ -35,7 +35,7 @@ runs:
 
     - name: Check for patch label
       id: patch
-      uses: anttiharju/actions/require-label@v0
+      uses: smartlyio/github-actions@require-label-v1
       with:
         labels: ${{ steps.label.outputs.names }}
         name: "patch"
