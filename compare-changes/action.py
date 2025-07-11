@@ -69,18 +69,17 @@ def extract_path_patterns(config):
     )
 
 
-def check_for_matches(path_patterns, changed_files):
-    """Check if any changed file matches any path pattern."""
+def check_for_matches(original_patterns, fnmatch_patterns, changed_files):
+    """Check if any changed file matches any path pattern, using original pattern intent."""
     for changed_file in changed_files:
-        for pattern in path_patterns:
-            # For patterns without slashes that aren't directory patterns,
-            # ensure they only match at the root level
-            if "/" not in pattern and "*" in pattern and "/" in changed_file:
+        for orig_pattern, fn_pattern in zip(original_patterns, fnmatch_patterns):
+            # Only restrict to root-level if the original pattern does NOT contain a slash or '**/'
+            is_root_only = ("/" not in orig_pattern and not orig_pattern.startswith("**/"))
+            if is_root_only and "*" in fn_pattern and "/" in changed_file:
                 # Skip files in subdirectories for root-level patterns
                 continue
-
-            if fnmatch.fnmatch(changed_file, pattern):
-                print(f"File '{changed_file}' matches pattern '{pattern}'")
+            if fnmatch.fnmatch(changed_file, fn_pattern):
+                print(f"File '{changed_file}' matches pattern '{fn_pattern}' (original: '{orig_pattern}')")
                 print(
                     "Returning early as an optimisation, there may be more matches not listed here."
                 )
@@ -130,7 +129,7 @@ def main():
                 print(f"- '{before}' -> '{after}'")
 
         # Check for matches (using converted patterns)
-        matched = check_for_matches(fnmatch_patterns, changed_files)
+        matched = check_for_matches(path_patterns, fnmatch_patterns, changed_files)
 
         # Output the result to GitHub Actions
         appending_mode = "a"
