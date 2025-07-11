@@ -7,8 +7,8 @@ on:
       - "!compare-changes/README.md"
 
 jobs:
-  example:
-    name: Example
+  test:
+    name: Test
     runs-on: [ubuntu-24.04]
     steps:
       - name: Checkout
