@@ -28,7 +28,7 @@ def convert_github_patterns_to_fnmatch(github_patterns):
             converted = pattern[:-4] + "*"
             fnmatch_patterns.append(converted)
         # Handle **/*.file pattern (matches any .file at any depth)
-        elif pattern.startswith("**/") and "." in pattern:
+        elif pattern.startswith("**/*."):
             converted = pattern[3:]
             fnmatch_patterns.append(converted)
         # Keep other patterns as is
