@@ -20,7 +20,11 @@ def test_check_for_matches():
             "changes": ["foo.yml", "bar/test.yml"],
             "expected": True,
         },
-        {"patterns": ["*.yml"], "changes": ["bar/test.yml"], "expected": False},
+        {
+            "patterns": ["*.yml"],
+            "changes": ["bar/test.yml"],
+            "expected": False
+        },
         {
             "patterns": ["**/*.yml"],
             "changes": ["foo.yml", "bar/test.yml"],
@@ -41,14 +45,26 @@ def test_check_for_matches():
             "changes": ["main.py", "src/app.py", "docs/readme.md"],
             "expected": True,
         },
-        {"patterns": ["*.md"], "changes": ["docs/readme.md"], "expected": False},
-        {"patterns": ["**/*.md"], "changes": ["docs/readme.md"], "expected": True},
+        {
+            "patterns": ["*.md"],
+            "changes": ["docs/readme.md"],
+            "expected": False
+        },
+        {
+            "patterns": ["**/*.md"],
+            "changes": ["docs/readme.md"],
+            "expected": True
+        },
         {
             "patterns": ["foo/bar.txt"],
             "changes": ["foo/bar.txt", "bar/foo.txt"],
             "expected": True,
         },
-        {"patterns": ["foo/bar.txt"], "changes": ["bar/foo.txt"], "expected": False},
+        {
+            "patterns": ["foo/bar.txt"],
+            "changes": ["bar/foo.txt"],
+            "expected": False
+        },
     ]
     for i, case in enumerate(test_cases):
         fnmatch_patterns = action.convert_github_patterns_to_fnmatch(case["patterns"])
