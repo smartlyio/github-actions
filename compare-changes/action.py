@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import json
-import yaml
 import fnmatch
 
 
@@ -74,12 +73,16 @@ def check_for_matches(original_patterns, fnmatch_patterns, changed_files):
     for changed_file in changed_files:
         for orig_pattern, fn_pattern in zip(original_patterns, fnmatch_patterns):
             # Only restrict to root-level if the original pattern does NOT contain a slash or '**/'
-            is_root_only = ("/" not in orig_pattern and not orig_pattern.startswith("**/"))
+            is_root_only = "/" not in orig_pattern and not orig_pattern.startswith(
+                "**/"
+            )
             if is_root_only and "*" in fn_pattern and "/" in changed_file:
                 # Skip files in subdirectories for root-level patterns
                 continue
             if fnmatch.fnmatch(changed_file, fn_pattern):
-                print(f"File '{changed_file}' matches pattern '{fn_pattern}' (original: '{orig_pattern}')")
+                print(
+                    f"File '{changed_file}' matches pattern '{fn_pattern}' (original: '{orig_pattern}')"
+                )
                 print(
                     "Returning early as an optimisation, there may be more matches not listed here."
                 )
@@ -88,6 +91,8 @@ def check_for_matches(original_patterns, fnmatch_patterns, changed_files):
 
 
 def main():
+    import yaml  # Only import yaml when main() is run
+
     # Get inputs from environment variables
     changes_json = os.environ.get("INPUT_CHANGES", "[]")
     wildcard_name = os.environ.get("INPUT_WILDCARD")
