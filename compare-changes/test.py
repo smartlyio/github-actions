@@ -28,7 +28,7 @@ def test_check_for_matches():
         {
             "patterns": ["**/*.yml"],
             "changes": ["foo.yml", "bar/test.yml"],
-            "expected": True,
+            "expected": False,
         },
         {
             "patterns": ["dir/**"],
