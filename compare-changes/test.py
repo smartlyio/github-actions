@@ -36,8 +36,18 @@ def test_check_for_matches():
             "expected": True,
         },
         {
+            "patterns": ["dir/**"],
+            "changes": ["dir/sub/file.txt"],
+            "expected": True,
+        },
+        {
             "patterns": ["dir/**/*"],
             "changes": ["dir/file.txt", "dir/sub/file.txt"],
+            "expected": True,
+        },
+        {
+            "patterns": ["dir/**/*"],
+            "changes": ["dir/sub/file.txt"],
             "expected": True,
         },
         {
@@ -46,9 +56,19 @@ def test_check_for_matches():
             "expected": True,
         },
         {
+            "patterns": ["**/*.py"],
+            "changes": ["src/foo/app.py"],
+            "expected": True,
+        },
+        {
             "patterns": ["*.md"],
             "changes": ["docs/readme.md"],
             "expected": False
+        },
+        {
+            "patterns": ["*.md"],
+            "changes": ["readme.md"],
+            "expected": True
         },
         {
             "patterns": ["**/*.md"],
