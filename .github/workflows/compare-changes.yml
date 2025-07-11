@@ -1,0 +1,20 @@
+name: compare-changes
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/compare-changes.yml"
+      - "compare-changes/**/*"
+      - "!compare-changes/README.md"
+
+jobs:
+  example:
+    name: Example
+    runs-on: [ubuntu-24.04]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        shell: sh
+        run: |
+          python3 ./compare-changes/test.py
