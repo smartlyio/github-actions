@@ -1,0 +1,18 @@
+name: "Validate branch protection"
+description: "Checks that finish-ci job needs lists all the previous jobs"
+inputs:
+  workflow:
+    description: "The workflow file to validate"
+    default: "pull_request.yml"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Generate matrix
+      id: enrich
+      shell: sh
+      env:
+        workflow: ".github/workflows/${{ inputs.workflow }}"
+      run: |
+        "$GITHUB_ACTION_PATH/action.py" "$workflow"
