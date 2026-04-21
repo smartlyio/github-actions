@@ -39,7 +39,7 @@ runs:
       run: ${{ github.action_path }}/get-merge-window.sh
       shell: bash
     - name: Get merged PRs
-      uses: octokit/graphql-action@v2.x
+      uses: octokit/graphql-action@v3.x
       id: get-release-prs
       with:
         token: ${{ inputs.token }}
