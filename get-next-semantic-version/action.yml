@@ -43,7 +43,7 @@ runs:
         } >> "$GITHUB_OUTPUT"
         cat "$GITHUB_OUTPUT"
     - name: Get PR labels
-      uses: octokit/graphql-action@v2.x
+      uses: octokit/graphql-action@v3.x
       id: get_latest_prs
       with:
         query: |
