@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Publish Markdown to Confluence
         uses: markdown-confluence/publish@v1
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Publish Markdown to Confluence
         uses: markdown-confluence/publish@v1
@@ -157,7 +157,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Publish Markdown to Confluence
         uses: markdown-confluence/publish@v1
