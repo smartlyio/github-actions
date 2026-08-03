@@ -1,4 +1,5 @@
 name: Editorconfig-Checker
+# Retag after Node 24 dependency bumps.
 description: Runs Editorconfig-Checker on files tracked by Git.
 inputs:
   version:

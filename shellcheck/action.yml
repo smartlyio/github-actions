@@ -1,4 +1,5 @@
 name: ShellCheck
+# Retag after Node 24 dependency bumps.
 description: Runs ShellCheck with colorful output
 inputs:
   version:
