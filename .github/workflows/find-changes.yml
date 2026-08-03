@@ -6,6 +6,9 @@ on:
       - "find-changes/**/*"
       - "!find-changes/README.md"
 
+permissions:
+  contents: read
+
 jobs:
   example:
     name: Example
