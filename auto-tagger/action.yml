@@ -45,7 +45,7 @@ runs:
 
     - name: Push tag
       if: inputs.auto_tag_always == 'true' || (github.event.action == 'closed' && github.event.pull_request.merged)
-      uses: octokit/request-action@v2.x
+      uses: octokit/request-action@v3.x
       with:
         route: POST /repos/:repository/git/refs
         repository: ${{ github.repository }}
