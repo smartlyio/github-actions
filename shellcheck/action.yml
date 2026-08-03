@@ -11,7 +11,7 @@ runs:
   steps:
     - name: Cache ShellCheck binary
       id: cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: /usr/local/bin/shellcheck
         key: shellcheck-${{ inputs.version }}
