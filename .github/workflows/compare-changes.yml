@@ -6,6 +6,9 @@ on:
       - "compare-changes/**/*"
       - "!compare-changes/README.md"
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test

@@ -6,6 +6,9 @@ on:
     paths:
       - calculate-incremental-tag/**
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: calculate-incremental-tag

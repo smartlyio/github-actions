@@ -7,6 +7,9 @@ on:
       - setup-ruby/**
       - _testing/setup-ruby/**
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: setup-ruby ${{ matrix.os }}/${{ matrix.version }}
