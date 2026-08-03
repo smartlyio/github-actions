@@ -1,4 +1,5 @@
 name: Prettier
+# Retag after Node 24 dependency bumps.
 description: Run Prettier in check mode.
 inputs:
   patterns:

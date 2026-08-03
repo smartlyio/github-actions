@@ -1,4 +1,5 @@
 name: actionlint
+# Retag after Node 24 dependency bumps.
 description: Runs actionlint with color output
 inputs:
   version:
